@@ -23,9 +23,7 @@ function Gameboard() {
         board[row][column].addMarker(player);
     }
 
-    const displayBoard = () => {
-        console.log(getBoard());
-    }
+    const displayBoard = () => console.log(getBoard());
 
     return { getBoard, placeMarker, displayBoard };
 }
@@ -43,6 +41,9 @@ function Marker() {
 }
 
 function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
+    let gameOver = false;
+    let winner = "";
+
     const board = Gameboard();
 
     const allEqual = array => array.every(
@@ -70,13 +71,20 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
 
     const displayNewRound = () => {
         board.displayBoard();
-        console.log(`${getActivePlayer().name}'s turn.`);
+        displayWinner();
+
+        if (gameOver && winner) {
+            for (player of players) {
+                if (winner === player.marker) {
+                    console.log(`The winner is ${player.name}`);
+                }
+            }
+        } else {
+            console.log(`${getActivePlayer().name}'s turn.`);
+        }
     };
 
     const displayWinner = () => {
-        let winner = "";
-        let gameOver = false;
-
         const boardWithValues = board.getBoard();
 
         if (
