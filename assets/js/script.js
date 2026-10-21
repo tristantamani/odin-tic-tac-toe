@@ -87,22 +87,19 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
 
     const displayNewRound = () => {
         board.displayBoard();
-        displayWinner();
+        checkWinner();
 
         if (gameOver && winner) {
-            for (player of players) {
-                if (winner === player.marker) {
-                    console.log(`The winner is ${player.name}`);
-                }
-            }
+            displayWinner();
             board.resetBoard();
             console.log(`NEW GAME! ${getActivePlayer().name}'s turn.`);
+            board.displayBoard();
         } else {
             console.log(`${getActivePlayer().name}'s turn.`);
         }
     };
 
-    const displayWinner = () => {
+    const checkWinner = () => {
         const boardWithValues = board.getBoard();
 
         if (
@@ -130,11 +127,20 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
         }
     };
 
+    const displayWinner = () => {
+        for (player of players) {
+            if (winner === player.marker) {
+                console.log(`The winner is ${player.name}`);
+            }
+        }
+    };
+
     const playRound = (row, column) => {
         const boardWithValues = board.getBoard();
 
         if (boardWithValues[row][column]) {
             console.log(`You cannot place your marker there! Try again.`)
+            displayNewRound();
         } else {
             console.log(
                 `Placing ${getActivePlayer().name}'s marker into row ${row} ; column ${column}...`
