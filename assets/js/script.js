@@ -3,12 +3,23 @@ function Gameboard() {
     const columns = 3;
     const board = [];
 
+    const createBoard = () => {
+        for (let i = 0; i < rows; i++) {
+            board[i] = [];
+            for (let j = 0; j < columns; j++) {
+                board[i].push(Marker());
+            }
+        }
+    };
+
+    createBoard();
+
     for (let i = 0; i < rows; i++) {
         board[i] = [];
         for (let j = 0; j < columns; j++) {
             board[i].push(Marker());
         }
-    }
+    };
 
     const getBoard = () => board.map((row) =>
         row.map((cell) => cell.getValue())
@@ -21,11 +32,16 @@ function Gameboard() {
 
         if (!emptyCell.length) return;
         board[row][column].addMarker(player);
-    }
+    };
 
     const displayBoard = () => console.log(getBoard());
 
-    return { getBoard, placeMarker, displayBoard };
+    const resetBoard = () => {
+        board.splice(0, board.length);
+        createBoard();
+    };
+
+    return { getBoard, placeMarker, displayBoard, resetBoard };
 }
 
 function Marker() {
@@ -33,7 +49,7 @@ function Marker() {
 
     const addMarker = (player) => {
         value = player;
-    }
+    };
 
     const getValue = () => value;
 
@@ -79,6 +95,8 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
                     console.log(`The winner is ${player.name}`);
                 }
             }
+            board.resetBoard();
+            console.log(`NEW GAME! ${getActivePlayer().name}'s turn.`);
         } else {
             console.log(`${getActivePlayer().name}'s turn.`);
         }
@@ -110,7 +128,7 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
             gameOver = true;
             winner = boardWithValues[0][2]
         }
-    }
+    };
 
     const playRound = (row, column) => {
         console.log(
@@ -120,7 +138,7 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
 
         switchActivePlayer();
         displayNewRound();
-    }
+    };
 
     displayNewRound();
 
