@@ -63,8 +63,10 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
     const board = Gameboard();
 
     const allEqual = array => array.every(
-        item => item !== " " && item === array[0]
+        value => value !== " " && value === array[0]
     );
+
+    const allFilled = array => array.every(value => value !== 0);
 
     const players = [
         {
@@ -125,12 +127,21 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
             gameOver = true;
             winner = boardWithValues[0][2]
         }
+
+        if (allFilled(boardWithValues[0]) &&
+            allFilled(boardWithValues[1]) &&
+            allFilled(boardWithValues[2])
+        ) {
+            winner = "tie";
+        }
     };
 
     const displayWinner = () => {
         for (player of players) {
             if (winner === player.marker) {
                 console.log(`The winner is ${player.name}`);
+            } else if (winner === "tie") {
+                console.log(`Nobody won, it's a TIE!`)
             }
         }
     };
