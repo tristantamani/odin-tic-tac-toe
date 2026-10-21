@@ -131,13 +131,19 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
     };
 
     const playRound = (row, column) => {
-        console.log(
-            `Placing ${getActivePlayer().name}'s marker into row ${row} ; column ${column}...`
-        );
-        board.placeMarker(row, column, getActivePlayer().marker);
+        const boardWithValues = board.getBoard();
 
-        switchActivePlayer();
-        displayNewRound();
+        if (boardWithValues[row][column]) {
+            console.log(`You cannot place your marker there! Try again.`)
+        } else {
+            console.log(
+                `Placing ${getActivePlayer().name}'s marker into row ${row} ; column ${column}...`
+            );
+            board.placeMarker(row, column, getActivePlayer().marker);
+
+            switchActivePlayer();
+            displayNewRound();
+        }
     };
 
     displayNewRound();
