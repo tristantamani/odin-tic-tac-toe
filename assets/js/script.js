@@ -10,6 +10,10 @@ function Gameboard() {
         }
     }
 
+    const getBoard = () => board.map((row) =>
+        row.map((cell) => cell.getValue())
+    );
+
     const placeMarker = (row, column, player) => {
         const emptyCell = board
             .filter((row) => row[column].getValue() === 0)
@@ -20,13 +24,10 @@ function Gameboard() {
     }
 
     const displayBoard = () => {
-        const boardWithValues = board.map((row) =>
-            row.map((cell) => cell.getValue())
-        );
-        console.log(boardWithValues);
+        console.log(getBoard());
     }
 
-    return { placeMarker, displayBoard };
+    return { getBoard, placeMarker, displayBoard };
 }
 
 function Marker() {
@@ -43,6 +44,10 @@ function Marker() {
 
 function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
     const board = Gameboard();
+
+    const allEqual = array => array.every(
+        item => item !== " " && item === array[0]
+    );
 
     const players = [
         {
@@ -68,6 +73,37 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
         console.log(`${getActivePlayer().name}'s turn.`);
     };
 
+    const displayWinner = () => {
+        let winner = "";
+        let gameOver = false;
+
+        const boardWithValues = board.getBoard();
+
+        if (
+            allEqual(boardWithValues[0]) ||
+            allEqual([boardWithValues[0][0], boardWithValues[1][0], boardWithValues[2][0]]) ||
+            allEqual([boardWithValues[0][0], boardWithValues[1][1], boardWithValues[2][2]])
+        ) {
+            gameOver = true;
+            winner = boardWithValues[0][0]
+        } else if (allEqual(boardWithValues[1])) {
+            gameOver = true;
+            winner = boardWithValues[1][0]
+        } else if (allEqual(boardWithValues[2])) {
+            gameOver = true;
+            winner = boardWithValues[2][0]
+        } else if (allEqual([boardWithValues[0][1], boardWithValues[1][1], boardWithValues[2][1]])) {
+            gameOver = true;
+            winner = boardWithValues[0][1]
+        } else if (
+            allEqual([boardWithValues[0][2], boardWithValues[1][2], boardWithValues[2][2]]) ||
+            allEqual([boardWithValues[0][2], boardWithValues[1][1], boardWithValues[2][0]])
+        ) {
+            gameOver = true;
+            winner = boardWithValues[0][2]
+        }
+    }
+
     const playRound = (row, column) => {
         console.log(
             `Placing ${getActivePlayer().name}'s marker into row ${row} ; column ${column}...`
@@ -80,7 +116,7 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
 
     displayNewRound();
 
-    return { playRound, getActivePlayer };
+    return { getActivePlayer, playRound, displayWinner };
 }
 
 const game = GameController();
