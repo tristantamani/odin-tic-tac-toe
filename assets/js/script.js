@@ -52,12 +52,13 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
     const board = Gameboard();
 
     const allEqual = array => array.every(
-        value => value !== " " && value === array[0]
+        value => value !== "" && value === array[0]
     );
 
     const allFilled = array => array.every(value => value !== "");
 
     const getWinner = () => winner;
+    const getGameOver = () => gameOver;
 
     const players = [
         {
@@ -118,6 +119,13 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
         }
     };
 
+    const clearBoard = () => {
+        board.resetBoard();
+        gameOver = false;
+        winner = "";
+        activePlayer = players[0];
+    };
+
     const playRound = (row, column) => {
         const boardArray = board.getBoard();
         const boardWithValues = boardArray.map((row) =>
@@ -135,7 +143,13 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
     };
 
     return {
-        getWinner, getPlayers, getActivePlayer, playRound, getBoard: board.getBoard
+        getWinner,
+        getGameOver,
+        getPlayers,
+        getActivePlayer,
+        playRound,
+        getBoard: board.getBoard,
+        clearBoard
     };
 }
 
@@ -154,30 +168,56 @@ function ScreenController() {
         const players = game.getPlayers();
         const activePlayer = game.getActivePlayer();
         const winner = game.getWinner();
+        const gameOver = game.getGameOver();
 
-        if (playerOne && playerTwo) {
-            players[0].name = playerOne;
-            players[1].name = playerTwo;
-        }
+        players[0].name = playerOne ? playerOne : "playerOne";
+        players[1].name = playerTwo ? playerTwo : "playerTwo"
 
         playerTurnDiv.textContent = `${activePlayer.name}'s turn (${activePlayer.marker})...`;
 
-        board.forEach((cell, row) => {
-            cell.forEach((cell, column) => {
-                const cellButton = document.createElement("button");
-                cellButton.classList.add("cell");
-                cellButton.dataset.row = row;
-                cellButton.dataset.column = column;
-                cellButton.textContent = cell.getValue();
-                boardDiv.appendChild(cellButton);
+        const displayBoard = () => {
+            board.forEach((cell, row) => {
+                cell.forEach((cell, column) => {
+                    const cellButton = document.createElement("button");
+                    cellButton.classList.add("cell");
+                    cellButton.dataset.row = row;
+                    cellButton.dataset.column = column;
+                    cellButton.textContent = cell.getValue();
+                    boardDiv.appendChild(cellButton);
+                });
             });
-        });
+        }
+
+        displayBoard();
+
+        const displayRestartButton = () => {
+            const button = document.querySelector(".button");
+            if (document.querySelector(".reset")) {
+                button.removeChild(document.querySelector(".reset"));
+            }
+
+            if (gameOver && winner !== "") {
+                const reset = document.createElement("button");
+
+                reset.classList.add("reset");
+                reset.textContent = "Restart Game";
+                button.appendChild(reset);
+
+                reset.addEventListener("click", () => {
+                    game.clearBoard();
+                    updateScreen();
+                });
+            }
+
+        }
 
         for (player of players) {
             if (winner === player.marker) {
                 playerTurnDiv.textContent = `${player.name} wins!`;
-            } else if (winner === "tie") {
+                displayRestartButton();
+            } else if (winner === "tie" && gameOver) {
                 playerTurnDiv.textContent = `Nobody won, it's a TIE!`;
+                displayRestartButton();
             }
         }
     };
