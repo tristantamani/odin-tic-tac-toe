@@ -25,14 +25,12 @@ function Gameboard() {
         board[row][column].addMarker(player);
     };
 
-    const displayBoard = () => console.log(getBoard());
-
     const resetBoard = () => {
         board.splice(0, board.length);
         createBoard();
     };
 
-    return { getBoard, placeMarker, displayBoard, resetBoard };
+    return { getBoard, placeMarker, resetBoard };
 }
 
 function Marker() {
@@ -82,10 +80,6 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
 
     const getActivePlayer = () => activePlayer;
 
-    const displayNewRound = () => {
-        board.displayBoard();
-    };
-
     const checkWinner = () => {
         const boardArray = board.getBoard();
         const boardWithValues = boardArray.map((row) =>
@@ -125,18 +119,22 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
     };
 
     const playRound = (row, column) => {
-        console.log(
-            `Placing ${getActivePlayer().name}'s marker into row ${row} ; column ${column}...`
+        const boardArray = board.getBoard();
+        const boardWithValues = boardArray.map((row) =>
+            row.map((cell) => cell.getValue())
         );
 
-        board.placeMarker(row, column, getActivePlayer().marker);
-        checkWinner();
-        switchActivePlayer();
+        if (
+            boardWithValues[row][column] === "" &&
+            winner === ""
+        ) {
+            board.placeMarker(row, column, getActivePlayer().marker);
+            checkWinner();
+            switchActivePlayer();
+        }
     };
 
-    displayNewRound();
-
-    return { 
+    return {
         getWinner, getPlayers, getActivePlayer, playRound, getBoard: board.getBoard
     };
 }
@@ -154,7 +152,7 @@ function ScreenController() {
         const activePlayer = game.getActivePlayer();
         const winner = game.getWinner();
 
-        playerTurnDiv.textContent = `${activePlayer.name}'s turn...`;
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn (${activePlayer.marker})...`;
 
         board.forEach((cell, row) => {
             cell.forEach((cell, column) => {
