@@ -177,19 +177,33 @@ function ScreenController() {
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
 
+        console.table(board);
+
         playerTurnDiv.textContent = `${activePlayer.name}'s turn...`;
 
-        board.forEach((row) => {
-            row.forEach((cell, index) => {
+        board.forEach((cell, row) => {
+            cell.forEach((cell, column) => {
                 const cellButton = document.createElement("button");
                 cellButton.classList.add("cell");
-                cellButton.dataset.row = cell;
-                cellButton.dataset.column = index;
+                cellButton.dataset.row = row;
+                cellButton.dataset.column = column;
                 cellButton.textContent = cell.getValue();
                 boardDiv.appendChild(cellButton);
             });
         });
     };
+
+    function clickHandlerBoard(e) {
+        const selectedRow = e.target.dataset.row;
+        const selectedColumn = e.target.dataset.column;
+
+        if (!selectedColumn) return;
+
+        game.playRound(selectedRow, selectedColumn);
+        updateScreen();
+    }
+
+    boardDiv.addEventListener("click", clickHandlerBoard);
 
     updateScreen();
 }
