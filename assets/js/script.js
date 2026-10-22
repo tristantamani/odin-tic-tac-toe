@@ -14,18 +14,11 @@ function Gameboard() {
 
     createBoard();
 
-    for (let i = 0; i < rows; i++) {
-        board[i] = [];
-        for (let j = 0; j < columns; j++) {
-            board[i].push(Marker());
-        }
-    };
-
     const getBoard = () => board;
 
     const placeMarker = (row, column, player) => {
         const emptyCell = board
-            .filter((row) => row[column].getValue() === 0)
+            .filter((row) => row[column].getValue() === "")
             .map((row) => row[column]);
 
         if (!emptyCell.length) return;
@@ -43,7 +36,7 @@ function Gameboard() {
 }
 
 function Marker() {
-    let value = 0;
+    let value = "";
 
     const addMarker = (player) => {
         value = player;
@@ -145,20 +138,12 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
     };
 
     const playRound = (row, column) => {
-        const boardWithValues = board.getBoard();
+        console.log(
+            `Placing ${getActivePlayer().name}'s marker into row ${row} ; column ${column}...`
+        );
+        board.placeMarker(row, column, getActivePlayer().marker);
 
-        if (boardWithValues[row][column]) {
-            console.log(`You cannot place your marker there! Try again.`)
-            displayNewRound();
-        } else {
-            console.log(
-                `Placing ${getActivePlayer().name}'s marker into row ${row} ; column ${column}...`
-            );
-            board.placeMarker(row, column, getActivePlayer().marker);
-
-            switchActivePlayer();
-            displayNewRound();
-        }
+        switchActivePlayer();
     };
 
     displayNewRound();
@@ -176,8 +161,6 @@ function ScreenController() {
 
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
-
-        console.table(board);
 
         playerTurnDiv.textContent = `${activePlayer.name}'s turn...`;
 

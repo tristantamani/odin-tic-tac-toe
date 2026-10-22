@@ -6,7 +6,6 @@
 }
 
 .board {
-    color: white;
     display: grid;
     height: 500px;
     width: 500px;
@@ -19,11 +18,12 @@
 }
 
 .cell {
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: 2rem;
+    font-size: 3rem;
     border: 1px solid white;
     background: rebeccapurple;
     cursor: pointer;
