@@ -28,3 +28,7 @@
     background: rebeccapurple;
     cursor: pointer;
 }
+
+.cell:hover {
+    background-color: rgb(169, 83, 255);
+}
