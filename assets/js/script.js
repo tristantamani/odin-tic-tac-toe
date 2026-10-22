@@ -21,9 +21,7 @@ function Gameboard() {
         }
     };
 
-    const getBoard = () => board.map((row) =>
-        row.map((cell) => cell.getValue())
-    );
+    const getBoard = () => board;
 
     const placeMarker = (row, column, player) => {
         const emptyCell = board
@@ -165,7 +163,35 @@ function GameController(playerOne = "playerOne", playerTwo = "playerTwo") {
 
     displayNewRound();
 
-    return { getActivePlayer, playRound, displayWinner };
+    return { getActivePlayer, playRound, displayWinner, getBoard: board.getBoard };
 }
 
-const game = GameController();
+function ScreenController() {
+    const game = GameController();
+    const playerTurnDiv = document.querySelector(".turn");
+    const boardDiv = document.querySelector(".board");
+
+    const updateScreen = () => {
+        boardDiv.textContent = "";
+
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
+
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn...`;
+
+        board.forEach((row) => {
+            row.forEach((cell, index) => {
+                const cellButton = document.createElement("button");
+                cellButton.classList.add("cell");
+                cellButton.dataset.row = cell;
+                cellButton.dataset.column = index;
+                cellButton.textContent = cell.getValue();
+                boardDiv.appendChild(cellButton);
+            });
+        });
+    };
+
+    updateScreen();
+}
+
+ScreenController();
