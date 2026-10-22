@@ -144,6 +144,9 @@ function ScreenController() {
     const playerTurnDiv = document.querySelector(".turn");
     const boardDiv = document.querySelector(".board");
 
+    const playerOne = prompt("Enter Player 1 name: ");
+    const playerTwo = prompt("Enter Player 2 name: ");
+
     const updateScreen = () => {
         boardDiv.textContent = "";
 
@@ -151,6 +154,11 @@ function ScreenController() {
         const players = game.getPlayers();
         const activePlayer = game.getActivePlayer();
         const winner = game.getWinner();
+
+        if (playerOne && playerTwo) {
+            players[0].name = playerOne;
+            players[1].name = playerTwo;
+        }
 
         playerTurnDiv.textContent = `${activePlayer.name}'s turn (${activePlayer.marker})...`;
 
